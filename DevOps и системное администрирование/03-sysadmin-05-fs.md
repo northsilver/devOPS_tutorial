@@ -1,9 +1,13 @@
-1) Узнайте о sparse (разряженных) файлах.
+- Задание 1
 
+Узнайте о sparse (разряженных) файлах.
+```text
 Основное применение видимо для Торрентов и P2P
+```
+- Задание 2
 
-2) Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
-
+Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
+```text
 Нет не могут. Ссылка на один и тот же файл и inode, права не будут отличаться
 
 vagrant@vagrant:/tmp$ touch file_for_link
@@ -17,9 +21,11 @@ vagrant@vagrant:/tmp$ ls -ilh
 total 20K
 1835035 -rwxrwxrwx 2 vagrant vagrant    0 Nov 11 14:10 file_for_link
 1835035 -rwxrwxrwx 2 vagrant vagrant    0 Nov 11 14:10 link_for_file
+```
+- Задание 3
 
-3) Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile следующим:
-
+Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile следующим:
+```text
 vagrant@sysadm-fs:~$ lsblk
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 loop0                       7:0    0 67.2M  1 loop /snap/lxd/21835
@@ -32,16 +38,20 @@ sda                         8:0    0   64G  0 disk
   └─ubuntu--vg-ubuntu--lv 253:0    0 31.3G  0 lvm  /
 sdb                         8:16   0  2.5G  0 disk 
 sdc                         8:32   0  2.5G  0 disk 
+```
+- Задание 4
 
-4) Используя fdisk, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
-
+Используя fdisk, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
+```text
 Чуть напутал с номерами (2ой и 3), но вроде не критично
 Device     Boot   Start     End Sectors  Size Id Type
 /dev/sdb2          2048 4196351 4194304    2G 83 Linux
 /dev/sdb3       4196352 5242879 1046528  511M 83 Linux
+```
+- Задание 5
 
-5) Используя sfdisk, перенесите данную таблицу разделов на второй диск.
-
+Используя sfdisk, перенесите данную таблицу разделов на второй диск.
+```text
 Получилось только из под root
 vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sdb | sfdisk --force /dev/sdc 
 sfdisk: cannot open /dev/sdc: Permission denied
@@ -77,9 +87,11 @@ Device     Boot   Start     End Sectors  Size Id Type
 The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
+```
+- Задание 6
 
-6) Соберите mdadm RAID1 на паре разделов 2 Гб.
-
+Соберите mdadm RAID1 на паре разделов 2 Гб.
+```text
 root@sysadm-fs:~# sudo mdadm --detail /dev/md1
 /dev/md1:
            Version : 1.2
@@ -107,9 +119,11 @@ Consistency Policy : resync
     Number   Major   Minor   RaidDevice State
        0       8       18        0      active sync   /dev/sdb2
        1       8       34        1      active sync   /dev/sdc2
+```
+- Задание 7
 
-7) Соберите mdadm RAID0 на второй паре маленьких разделов.
-
+Соберите mdadm RAID0 на второй паре маленьких разделов.
+```text
 root@sysadm-fs:~# sudo mdadm --detail /dev/md0 
 /dev/md0:
            Version : 1.2
@@ -139,15 +153,19 @@ Consistency Policy : none
     Number   Major   Minor   RaidDevice State
        0       8       19        0      active sync   /dev/sdb3
        1       8       35        1      active sync   /dev/sdc3
+```
+- Задание 8
 
-8) Создайте 2 независимых PV на получившихся md-устройствах.
-
+Создайте 2 независимых PV на получившихся md-устройствах.
+```text
 root@sysadm-fs:~# pvcreate /dev/md0 /dev/md1
   Physical volume "/dev/md0" successfully created.
   Physical volume "/dev/md1" successfully created.
+```
+- Задание 9
 
-9) Создайте общую volume-group на этих двух PV.
-
+Создайте общую volume-group на этих двух PV.
+```text
 root@sysadm-fs:~# vgcreate vg1 /dev/md0 /dev/md1
   Volume group "vg1" successfully created
 root@sysadm-fs:~# vgdisplay 
@@ -192,9 +210,11 @@ root@sysadm-fs:~# vgdisplay
   Alloc PE / Size       0 / 0   
   Free  PE / Size       765 / <2.99 GiB
   VG UUID               aeA5ZE-PgHd-qsOB-HFcv-0L2G-iQ9D-qry98k
+```
+- Задание 10
 
-10) Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
-
+Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
+```text
 root@sysadm-fs:~# lvcreate -L 100M vg1 /dev/md0
   Logical volume "lvol0" created.
 root@sysadm-fs:~# vgs
@@ -205,9 +225,11 @@ root@sysadm-fs:~# lvs
   LV        VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
   ubuntu-lv ubuntu-vg -wi-ao---- <31.25g                                                    
   lvol0     vg1       -wi-a----- 100.00m 
+```
+- Задание 11
 
-11) Создайте mkfs.ext4 ФС на получившемся LV.
-
+Создайте mkfs.ext4 ФС на получившемся LV.
+```text
 root@sysadm-fs:~# mkfs.ext4 /dev/vg1/lvol0
 mke2fs 1.45.5 (07-Jan-2020)
 Creating filesystem with 25600 4k blocks and 25600 inodes
@@ -216,13 +238,17 @@ Allocating group tables: done
 Writing inode tables: done                            
 Creating journal (1024 blocks): done
 Writing superblocks and filesystem accounting information: done
+```
+- Задание 12
 
-12) Смонтируйте этот раздел в любую директорию, например, /tmp/new.
-
+Смонтируйте этот раздел в любую директорию, например, /tmp/new.
+```text
 root@sysadm-fs:~# mount /dev/vg1/lvol0 /tmp/new/
+```
+- Задание 13
 
-13) Поместите туда тестовый файл, например wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz.
-
+Поместите туда тестовый файл, например wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz.
+```text
 root@sysadm-fs:~# wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz
 --2022-11-11 15:11:30--  https://mirror.yandex.ru/ubuntu/ls-lR.gz
 Resolving mirror.yandex.ru (mirror.yandex.ru)... 213.180.204.183, 2a02:6b8::183
@@ -234,9 +260,11 @@ Saving to: ‘/tmp/new/test.gz’
 /tmp/new/test.gz                                   100%[===============================================================================================================>]  22.21M  4.71MB/s    in 5.2s    
 
 2022-11-11 15:11:36 (4.28 MB/s) - ‘/tmp/new/test.gz’ saved [23293093/23293093]
+```
+- Задание 14
 
-14) Прикрепите вывод lsblk.
-
+Прикрепите вывод lsblk.
+```text
 root@sysadm-fs:~# lsblk
 NAME                      MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
 loop0                       7:0    0 67.2M  1 loop  /snap/lxd/21835
@@ -262,15 +290,19 @@ sdc                         8:32   0  2.5G  0 disk
 └─sdc3                      8:35   0  511M  0 part  
   └─md0                     9:0    0 1018M  0 raid0 
     └─vg1-lvol0           253:1    0  100M  0 lvm   /tmp/new
+```
+- Задание 15
 
-15) Протестируйте целостность файла:
-
+Протестируйте целостность файла:
+```text
 root@sysadm-fs:~# gzip -t /tmp/new/test.gz
 root@sysadm-fs:~# echo $?
 0
+```
+- Задание 16
 
-16) Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
-
+Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
+```text
 root@sysadm-fs:~# pvmove /dev/md0
   /dev/md0: Moved: 32.00%
   /dev/md0: Moved: 100.00%
@@ -299,9 +331,11 @@ sdc                         8:32   0  2.5G  0 disk
 │   └─vg1-lvol0           253:1    0  100M  0 lvm   /tmp/new
 └─sdc3                      8:35   0  511M  0 part  
   └─md0                     9:0    0 1018M  0 raid0 
+```
+- Задание 17
 
-17) Сделайте --fail на устройство в вашем RAID1 md.
-
+Сделайте --fail на устройство в вашем RAID1 md.
+```text
 root@sysadm-fs:~# mdadm /dev/md1 --fail /dev/sdb2
 mdadm: set /dev/sdb2 faulty in /dev/md1
 root@sysadm-fs:~# mdadm --detail /dev/md1
@@ -333,9 +367,11 @@ Consistency Policy : resync
        1       8       34        1      active sync   /dev/sdc2
 
        0       8       18        -      faulty   /dev/sdb2
+```
+- Задание 18
 
-18) Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии.
-
+Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии.
+```text
 root@sysadm-fs:~# dmesg | grep md1
 [ 1748.932754] md/raid1:md1: not clean -- starting background reconstruction
 [ 1748.932755] md/raid1:md1: active with 2 out of 2 mirrors
@@ -344,12 +380,18 @@ root@sysadm-fs:~# dmesg | grep md1
 [ 1759.211188] md: md1: resync done.
 [ 3465.316113] md/raid1:md1: Disk failure on sdb2, disabling device.
                md/raid1:md1: Operation continuing on 1 devices.
+```
+- Задание 19
 
-19) Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
-
+Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
+```text
 root@sysadm-fs:~# gzip -t /tmp/new/test.gz && echo $?
 0
+```
+- Задание 20
 
-20) Погасите тестовый хост, vagrant destroy.
+Погасите тестовый хост, vagrant destroy.
+```text
 ==> default: Discarding saved state of VM...
 ==> default: Destroying VM and associated drives...
+```

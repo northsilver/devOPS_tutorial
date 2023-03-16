@@ -1,4 +1,5 @@
 - Задание 1
+Докер манифест
 ```bash
 FROM centos:7
 
@@ -29,6 +30,7 @@ CMD ["sh", "-c", "${HOME}/bin/elasticsearch"]
 
 [Ссылка на образ](https://hub.docker.com/layers/northsilver/elasticsearch/ver1.0/images/sha256-b2fbaa0b816c9cd6aeadf5b1904cae151d633809ca3839a2b3c7480fd077eafe?context=repo)
 
+Ответ от эластика
 ```bash
 vagrant@sysadm-fs:~/devOPS_tutorial$ curl -X GET "localhost:9200/?pretty"
 {
@@ -51,7 +53,7 @@ vagrant@sysadm-fs:~/devOPS_tutorial$ curl -X GET "localhost:9200/?pretty"
 ```
 
 - Задание 2
-
+Создание реплик и шардов по индексам
 ```bash
 vagrant@sysadm-fs:~/devOPS_tutorial$ curl -X PUT http://localhost:9200/ind-1 -H 'Content-Type: application/json' -d '
 {
@@ -84,7 +86,7 @@ vagrant@sysadm-fs:~/devOPS_tutorial$ curl -X PUT http://localhost:9200/ind-3 -H 
 }
 '
 ```
-
+Итого
 ```bash
 vagrant@sysadm-fs:~/devOPS_tutorial$ curl http://localhost:9200/_cat/indices?v=true
 health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
@@ -93,7 +95,7 @@ green  open   ind-1            cP52r3BOTvmksf_TEki0lw   1   0          0        
 yellow open   ind-3            noNPwQs2SVOYwPYkYEeMGA   4   2          0            0       904b           904b
 yellow open   ind-2            mrQN5_QPQRSdh2bzyFDg7A   2   1          0            0       452b           452b
 ```
-
+Состояние кластера
 ```bash
 vagrant@sysadm-fs:~/devOPS_tutorial$  curl -ss http://localhost:9200/_cluster/health?pretty
 {
@@ -116,6 +118,7 @@ vagrant@sysadm-fs:~/devOPS_tutorial$  curl -ss http://localhost:9200/_cluster/he
 ```
 Как говорили в лекции т.к. при создании индексов мы указали кол-во реплик больше 1 и в кластере одна нода, поэтому статус желтый, реплицировать некуда.
 
+Удаление
 ```bash
 vagrant@sysadm-fs:~/devOPS_tutorial$ curl -ss -XDELETE http://localhost:9200/ind-1
 {"acknowledged":true}

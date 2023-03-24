@@ -1,53 +1,97 @@
 - Задание 1
-1. Ответить на четыре вопроса из раздела «Легенда».
-Какой тип инфраструктуры будем использовать для этого проекта: изменяемый или не изменяемый?
-```text
-Неизменяемый
-```
-Будет ли центральный сервер для управления инфраструктурой?
-```text
-Лучше использовать два(или кластер если позволяют ресурсы) один для управления, второй для локального гита.
-```
-Будут ли агенты на серверах?
-```text
-Нет, через ssh
-```
-Будут ли использованы средства для управления конфигурацией или инициализации ресурсов?
-```text
-Да, Terraform.
-```
-2. Решить, какие инструменты из уже используемых вы хотели бы применить для нового проекта.
-```text
-Packer, Terraform, Docker, Kubernetes, Ansible.
-```
-3. Определиться, хотите ли рассмотреть возможность внедрения новых инструментов для этого проекта.
-```text
-Teamcity лучше заменить на GitLab
-```
 
-- Задание 2
+- Изучите файл .gitignore. В каком terraform файле допустимо сохранить личную, секретную информацию?
 ```text
-ivan@ivan-ThinkPad-X395:~$ terraform --version
-Terraform v1.4.2
-on linux_amd64
+personal.auto.tfvars
 ```
+Выполните код проекта. Найдите в State-файле секретное содержимое созданного ресурса random_password. Пришлите его в качестве ответа.
+```text
+{
+  "version": 4,
+  "terraform_version": "1.4.2",
+  "serial": 1,
+  "lineage": "697bdf96-cb7d-b022-2f0b-de46e8edab46",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "random_password",
+      "name": "random_string",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 3,
+          "attributes": {
+            "bcrypt_hash": "$2a$10$dCkrLlQKjA2JZ5lC1vDa6OGIE8Uz1iH/cDZjRmHHiNcx0OtrgPOKq",
+            "id": "none",
+            "keepers": null,
+            "length": 16,
+            "lower": true,
+            "min_lower": 1,
+            "min_numeric": 1,
+            "min_special": 0,
+            "min_upper": 1,
+            "number": true,
+            "numeric": true,
+            "override_special": null,
+            **"result": "Wd8VupiEkG1qWeP1",**
+            "special": false,
+            "upper": true
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
+```
+Раскомментируйте блок кода, примерно расположенный на строчках 29-42 файла main.tf. Выполните команду terraform -validate. Объясните в чем заключаются намеренно допущенные ошибки? Исправьте их.
+```text
+resource "docker_image" {  - нет имени ресурса
+resource "docker_container" "1nginx" {  - название не может начинаться с числа
+```
+Выполните код. В качестве ответа приложите вывод команды docker ps
+```text
+ivan@ivan-ThinkPad-X395:~$ sudo docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES
+cf39c328043a   ac232364af84   "/docker-entrypoint.…"   5 seconds ago   Up 4 seconds   0.0.0.0:8000->80/tcp   example_Wd8VupiEkG1qWeP1
 
-- Задание 3
-Использовать Terraform Switcher
-```text
-ivan@ivan-ThinkPad-X395:~$ terraform --version
-Terraform v1.4.2
-on linux_amd64
 ```
-Переключение
+Замените имя docker-контейнера в блоке кода на hello_world, выполните команду terraform apply -auto-approve. Объясните своими словами, в чем может быть опасность применения ключа -auto-approve ?
 ```text
-ivan@ivan-ThinkPad-X395:~$ tfswitch 1.3.7
-Installing terraform at /home/ivan/bin
-Switched terraform to version "1.3.7"
-```
-```text
-ivan@ivan-ThinkPad-X395:~$ terraform --version
-Terraform v1.3.7
-on linux_amd64
-```
+ivan@ivan-ThinkPad-X395:~$ sudo docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                  NAMES
+53a23003bafd   ac232364af84   "/docker-entrypoint.…"   6 seconds ago   Up 6 seconds   0.0.0.0:8000->80/tcp   hello_world
 
+
+**terraform apply -auto-approve** - позволяет без поверки запустить выполнение конфигруации, в данном случае был перезатерт контейнер.
+```
+Уничтожьте созданные ресурсы с помощью terraform. Убедитесь, что все ресурсы удалены. Приложите содержимое файла terraform.tfstate.
+```text
+docker_container.nginx: Destroying... [id=446ec905cdff8bb8e9d51bc8592181ff0f52d5ca3995fd9f0285f9135b93cc34]
+docker_container.nginx: Destruction complete after 1s
+docker_image.nginx: Destroying... [id=sha256:ac232364af842735579e922641ae2f67d5b8ea97df33a207c5ea05f60c63a92dnginx:latest]
+random_password.random_string: Destroying... [id=none]
+docker_image.nginx: Destruction complete after 0s
+random_password.random_string: Destruction complete after 0s
+
+Destroy complete! Resources: 3 destroyed.
+ivan@ivan-ThinkPad-X395:~$ sudo docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+```text
+{
+  "version": 4,
+  "terraform_version": "1.4.2",
+  "serial": 14,
+  "lineage": "697bdf96-cb7d-b022-2f0b-de46e8edab46",
+  "outputs": {},
+  "resources": [],
+  "check_results": null
+}
+```
+Объясните, почему при этом не был удален docker образ nginx:latest ?(Ответ найдите в коде проекта или документации)
+```text
+из за опции keep_locally = true , она указывает, что нужно сохранить образ nginx локально.
+```

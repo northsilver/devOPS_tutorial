@@ -6,45 +6,8 @@ personal.auto.tfvars
 ```
 Выполните код проекта. Найдите в State-файле секретное содержимое созданного ресурса random_password. Пришлите его в качестве ответа.
 ```text
-{
-  "version": 4,
-  "terraform_version": "1.4.2",
-  "serial": 1,
-  "lineage": "697bdf96-cb7d-b022-2f0b-de46e8edab46",
-  "outputs": {},
-  "resources": [
-    {
-      "mode": "managed",
-      "type": "random_password",
-      "name": "random_string",
-      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
-      "instances": [
-        {
-          "schema_version": 3,
-          "attributes": {
-            "bcrypt_hash": "$2a$10$dCkrLlQKjA2JZ5lC1vDa6OGIE8Uz1iH/cDZjRmHHiNcx0OtrgPOKq",
-            "id": "none",
-            "keepers": null,
-            "length": 16,
-            "lower": true,
-            "min_lower": 1,
-            "min_numeric": 1,
-            "min_special": 0,
-            "min_upper": 1,
-            "number": true,
-            "numeric": true,
-            "override_special": null,
-            **"result": "Wd8VupiEkG1qWeP1",**
-            "special": false,
-            "upper": true
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    }
-  ],
-  "check_results": null
-}
+в файле terraform.tfstate
+"result": "Wd8VupiEkG1qWeP1",
 ```
 Раскомментируйте блок кода, примерно расположенный на строчках 29-42 файла main.tf. Выполните команду terraform -validate. Объясните в чем заключаются намеренно допущенные ошибки? Исправьте их.
 ```text
@@ -65,7 +28,7 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS   
 53a23003bafd   ac232364af84   "/docker-entrypoint.…"   6 seconds ago   Up 6 seconds   0.0.0.0:8000->80/tcp   hello_world
 
 
-**terraform apply -auto-approve** - позволяет без поверки запустить выполнение конфигруации, в данном случае был перезатерт контейнер.
+terraform apply -auto-approve - позволяет без поверки запустить выполнение конфигурации, в данном случае был перезатерт контейнер.
 ```
 Уничтожьте созданные ресурсы с помощью terraform. Убедитесь, что все ресурсы удалены. Приложите содержимое файла terraform.tfstate.
 ```text

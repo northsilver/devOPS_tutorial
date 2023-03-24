@@ -45,5 +45,6 @@ db.killOp(%opid%)
 2. Как бы вы решили эту проблему?
 ```
 1. Ограничить доступную память для PostgreSQL
+   Посмотреть и изменить параметры: max_connections, shared_buffer, work_mem, effective_cache_size, maintenance_work_mem
 2. Увеличить ресурсы сервера
 ```

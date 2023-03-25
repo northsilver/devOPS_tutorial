@@ -1,4 +1,4 @@
-# devOPS_tutorial
+# DevOPS tutorial
 
 **/.terraform/*  - исключение локального каталога терраформ
 
@@ -23,4 +23,3 @@ override.tf.json
 Исключение конфигурационных файлов
 .terraformrc
 terraform.rc
-

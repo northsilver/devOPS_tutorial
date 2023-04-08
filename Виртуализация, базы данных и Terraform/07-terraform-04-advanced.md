@@ -33,9 +33,9 @@ ssh_public_key = "~/.ssh/id_rsa.pub"
 ```
 Установка nginx в cloud-init
 ```terraform
-    packages:
-      - vim
-      - nginx
+packages:
+  - vim
+  - nginx
 ```
 
 [Скриншот подключения](https://github.com/northsilver/devOPS_tutorial/blob/master/PICtures/Screenshot%20from%202023-04-07%2012-59-57.png?raw=true)

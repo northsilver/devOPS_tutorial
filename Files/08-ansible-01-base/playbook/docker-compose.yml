@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  centos7:
+    image: centos:7
+    container_name: centos7
+    command: tail -F /var/log/messages
+  ubuntu:
+    image: pycontribs/ubuntu:latest
+    container_name: ubuntu
+    command: tail -F /var/log/syslog

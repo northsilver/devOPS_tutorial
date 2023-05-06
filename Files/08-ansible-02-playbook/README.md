@@ -52,7 +52,7 @@ notify: Start clickhouse service
 - name: Flush handlers
             meta: flush_handlers
 ```
-- Создание БД для принятия логов. ДБ создается выполнения поманды на настраиваемой ноде
+- Создание БД для принятия логов. ДБ создается после выполнения команды на настраиваемой ноде
 ```text
 - name: Create database
             ansible.builtin.command: "clickhouse-client -q 'create database logs;'"

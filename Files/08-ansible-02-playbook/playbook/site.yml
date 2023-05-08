@@ -26,29 +26,39 @@
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
           - clickhouse-common-static-{{ clickhouse_version }}.rpm
-      notify:
-        - Start clickhouse service
-    - name: Start clickhouse-server
-      become: true
-      ansible.builtin.service:
-        name: clickhouse-server
-        state: started
+      notify: Start clickhouse service
+    - name: Flush handlers
+      meta: flush_handlers
+    - name: Pause for 10 seconds.
+      ansible.builtin.pause:
+        seconds: 10
     - name: Create database
       ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
 
-
  - name: Install Vector
   hosts: vector
   handlers:
-    - name: Start vector service
+    - name: Start Vector service
       become: true
       ansible.builtin.service:
         name: vector
         state: restarted
   tasks:
+    - name: Get Vector version
+      become: true
+      ansible.builtin.command: vector --version
+      register: vector_installed
+      failed_when: vector_installed.rc !=0
+      changed_when: vector_installed.rc ==0
+      ignore_errors: true
+    - name: Create directory vector
+      become: true
+      file:
+        path: "{{ vector_path }}"
+        state: directory
     - name: Get vector distrib
       ansible.builtin.get_url:
         url: "https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1.x86_64.rpm"
@@ -58,3 +68,10 @@
       ansible.builtin.apt:
         deb: ./vector-{{ vector_version }}.rpm
       notify: Start vector service
+    - name: Configuring service vector
+      become: true
+      systemd:
+        name: vector
+        state: "started"
+        enabled: true
+        daemon_reload: true

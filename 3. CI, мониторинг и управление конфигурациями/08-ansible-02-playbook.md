@@ -16,12 +16,24 @@ vector:
  - name: Install Vector
   hosts: vector
   handlers:
-    - name: Start vector service
+    - name: Start Vector service
       become: true
       ansible.builtin.service:
         name: vector
         state: restarted
   tasks:
+    - name: Get Vector version
+      become: true
+      ansible.builtin.command: vector --version
+      register: vector_installed
+      failed_when: vector_installed.rc !=0
+      changed_when: vector_installed.rc ==0
+      ignore_errors: true
+    - name: Create directory vector
+      become: true
+      file:
+        path: "{{ vector_path }}"
+        state: directory
     - name: Get vector distrib
       ansible.builtin.get_url:
         url: "https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1.x86_64.rpm"
@@ -31,13 +43,33 @@ vector:
       ansible.builtin.apt:
         deb: ./vector-{{ vector_version }}.rpm
       notify: Start vector service
+    - name: Configuring service vector
+      become: true
+      systemd:
+        name: vector
+        state: "started"
+        enabled: true
+        daemon_reload: true
 ```
 - Задание 5
+Была ошибка переноса строки, сразу ее убрал, поэтому не попала в прошлый комит
+```bash
+ivan@ivan-ThinkPad-X395:~$ ansible-lint site.yml 
+yaml: trailing spaces (trailing-spaces)
+site.yml:70
+```
+и добавил ожидание
+```bash
+    - name: Pause for 10 seconds.
+      ansible.builtin.pause:
+        seconds: 10
+```
 ```bash
 ivan@ivan-ThinkPad-X395:~$ ansible-lint site.yml 
 WARNING: PATH altered to include /usr/bin
 WARNING  Overriding detected file kind 'yaml' with 'playbook' for given positional argument: site.yml
 ```
+
 - Задание 6
 ```bash
 ivan@ivan-ThinkPad-X395:~$ ansible-playbook -i inventory/prod.yml site.yml --check

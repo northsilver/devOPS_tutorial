@@ -1,3 +1,26 @@
+# Playbook
+Cодержит два плея: Install Clickhouse и Install Vector.
+## Install Clickhouse.
+### Переменные
+Определяют версию clickhouse и устанавливаемые пакеты.
+### Tasks:
+1. Get clickhouse distrib - скачивает дистрибутив нужной версии.
+2. Install clickhouse packages - устанавливает полученный дистрибутив.
+   Через handler (Start clickhouse service) запускает service clickhouse. 
+3. Pause for 10 seconds - пауза 10 секунд для перезапуска  clickhouse.
+4. Create database - создаёт базу данных `logs`.
+### Install Vector.
+#### Переменные
+Определяют версию clickhouse и устанавливаемые пакеты.
+### Tasks:
+1. Get Vector version - проверяет установлен ли vector.
+2. Create directory vector - создает директорию для установки.
+3. Get vector distrib - скачивает требуемую версию vector.
+4. Configuring service vector - настраивает работу vector в качестве сервиса и запускает его.
+Для создания окружения использовался yandex cloud.
+
+### Подробное описание кода представлено ниже
+
 - Хендлер. Блок выполнение которого возможно только при явном его вызове. Он выполняется после всех tasks.
 ```text
 - name: Install Clickhouse
@@ -65,12 +88,24 @@ notify: Start clickhouse service
  - name: Install Vector
   hosts: vector
   handlers:
-    - name: Start vector service
+    - name: Start Vector service
       become: true
       ansible.builtin.service:
         name: vector
         state: restarted
   tasks:
+    - name: Get Vector version
+      become: true
+      ansible.builtin.command: vector --version
+      register: vector_installed
+      failed_when: vector_installed.rc !=0
+      changed_when: vector_installed.rc ==0
+      ignore_errors: true
+    - name: Create directory vector
+      become: true
+      file:
+        path: "{{ vector_path }}"
+        state: directory
     - name: Get vector distrib
       ansible.builtin.get_url:
         url: "https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1.x86_64.rpm"
@@ -80,4 +115,11 @@ notify: Start clickhouse service
       ansible.builtin.apt:
         deb: ./vector-{{ vector_version }}.rpm
       notify: Start vector service
+    - name: Configuring service vector
+      become: true
+      systemd:
+        name: vector
+        state: "started"
+        enabled: true
+        daemon_reload: true
 ```

@@ -9,7 +9,7 @@ Cодержит три плея: Install Clickhouse , Install Vector, Install Li
    Через handler (Start clickhouse service) запускает service clickhouse. 
 3. Pause for 10 seconds - пауза 10 секунд для перезапуска  clickhouse.
 4. Create database - создаёт базу данных `logs`.
-### Install Vector.
+## Install Vector.
 ### Переменные
 Определяют версию clickhouse и устанавливаемые пакеты.
 ### Tasks:

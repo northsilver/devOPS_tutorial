@@ -894,8 +894,8 @@ vector-01                  : ok=2    changed=1    unreachable=0    failed=0    s
 
 - Задание 9
 
-[Ссылка на README](https://github.com/northsilver/devOPS_tutorial/tree/master/Files/08-ansible-03-playbook)
+[Ссылка на README](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/README.md)
 
 - Задание 10
 
-[Ссылка на измененный playbook](https://github.com/northsilver/devOPS_tutorial/tree/master/Files/08-ansible-03-playbook/playbook)
+[Ссылка на измененный playbook](https://github.com/northsilver/devOPS_tutorial/tree/master/Files/08-ansible-03-yandex/playbook)

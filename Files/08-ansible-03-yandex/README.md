@@ -17,6 +17,7 @@ Cодержит три плея: Install Clickhouse , Install Vector, Install Li
 2. Create directory vector - создает директорию для установки.
 3. Get vector distrib - скачивает требуемую версию vector.
 4. Configuring service vector - настраивает работу vector в качестве сервиса и запускает его.
+
 Для создания окружения использовался yandex cloud.
 ## Install Lighthouse.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/lighthouse/vars.yml)

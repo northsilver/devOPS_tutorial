@@ -38,7 +38,7 @@
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
 
- - name: Install Vector
+- name: Install Vector
   hosts: vector
   handlers:
     - name: Start Vector service
@@ -59,10 +59,12 @@
       file:
         path: "{{ vector_path }}"
         state: directory
+        mode: 0755
     - name: Get vector distrib
       ansible.builtin.get_url:
         url: "https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1.x86_64.rpm"
         dest: "./vector-{{ vector_version }}.rpm"
+        mode: 755
     - name: Install vector packages
       become: true
       ansible.builtin.apt:

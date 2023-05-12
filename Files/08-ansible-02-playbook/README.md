@@ -18,4 +18,4 @@ Cодержит два плея: Install Clickhouse и Install Vector.
 3. Get vector distrib - скачивает требуемую версию vector.
 4. Configuring service vector - настраивает работу vector в качестве сервиса и запускает его.
 
-Для создания окружения использовался yandex cloud.
+Для создания окружения использовался yandex cloud. 

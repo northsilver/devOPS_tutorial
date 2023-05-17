@@ -1,6 +1,34 @@
-# Playbook
-Cодержит три плея: Install Clickhouse , Install Vector, Install Lighthouse.
-## Install Clickhouse.
+# Playbook для установки Clickhouse,Vector,Lighthouse
+## Содержание
+
+- [Общение описание](#Общение-описание)  
+- [Требования](#Требования)
+- [Параметры и зависимости ](#Параметры-и-зависимости )
+- [Play Install Clickhouse](#Play-Install-Clickhouse)
+- [Play Install Vector](#Play-Install-Vector)
+- [Play Install Lighthouse](#Play-Install-Lighthouse)
+
+## Общение описание
+
+Развернет на каждом из указанных хостов по одному приложению:
+
+- Clickhouse
+- Vector
+- Lighthouse
+
+#### Требования 
+- Минимальные системные требования `CPU/RAM/Memory` - `2 core/ 2 gb / 20 gb`
+- Плейбук оринеторван на ОС Centos7
+- Для создания окружения использовался yandex cloud
+
+#### Параметры и зависимости 
+- IP развертки хостов нужно указать в файле [prod.yml](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/inventory/prod.yml)
+- Приложения Clickhouse и Vector будут установлены как службы, Lighthouse будет установлен в `/usr/share/lighthouse`
+- На хосте с Lighthouse будет запущен `nginx`
+- Плейбук содержит три плея: Install Clickhouse , Install Vector, Install Lighthouse.
+
+
+## Play Install Clickhouse.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/clickhouse/vars.yml)
 Определяют версию clickhouse и устанавливаемые пакеты.
 ### Tasks:
@@ -9,7 +37,7 @@ Cодержит три плея: Install Clickhouse , Install Vector, Install Li
    Через handler (Start clickhouse service) запускает service clickhouse. 
 3. Pause for 10 seconds - пауза 10 секунд для перезапуска  clickhouse.
 4. Create database - создаёт базу данных `logs`.
-## Install Vector.
+## Play Install Vector.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/vector/vars.yml)
 Определяют версию clickhouse и устанавливаемые пакеты.
 ### Tasks:
@@ -18,8 +46,7 @@ Cодержит три плея: Install Clickhouse , Install Vector, Install Li
 3. Get vector distrib - скачивает требуемую версию vector.
 4. Configuring service vector - настраивает работу vector в качестве сервиса и запускает его.
 
-Для создания окружения использовался yandex cloud.
-## Install Lighthouse.
+## Play Install Lighthouse.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/lighthouse/vars.yml)
 Определяют следующие параметры nginx:
 1. Путь для файла репозитория.

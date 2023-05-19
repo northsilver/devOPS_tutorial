@@ -7,6 +7,8 @@
       ansible.builtin.service:
         name: clickhouse-server
         state: restarted
+  tags:
+    - clickhouse
   tasks:
     - block:
         - name: Get clickhouse distrib
@@ -27,6 +29,8 @@
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
       notify: Start clickhouse service
+      tags:
+        - clickhouse
     - name: Flush handlers
       meta: flush_handlers
     - name: Pause for 10 seconds.

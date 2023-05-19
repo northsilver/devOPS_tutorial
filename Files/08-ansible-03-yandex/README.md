@@ -27,10 +27,19 @@
 - На хосте с Lighthouse будет запущен `nginx`
 - Плейбук содержит три плея: Install Clickhouse , Install Vector, Install Lighthouse.
 
+#### Теги
+Тег | Описание
+---------- | --------
+сlickhouse | Установка Clickhouse
+vector | Установка Vector
+lighthouse | Установка Lighthouse
 
 ## Play Install Clickhouse.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/clickhouse/vars.yml)
-Определяют версию clickhouse и устанавливаемые пакеты.
+Переменная | Описание
+---------- | --------
+clickhouse_version | Требуемая к установке версия дистрибутива
+clickhouse_packages | Список требуемых к установке пакетов
 ### Tasks:
 1. Get clickhouse distrib - скачивает дистрибутив нужной версии.
 2. Install clickhouse packages - устанавливает полученный дистрибутив.
@@ -39,7 +48,13 @@
 4. Create database - создаёт базу данных `logs`.
 ## Play Install Vector.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/vector/vars.yml)
-Определяют версию clickhouse и устанавливаемые пакеты.
+Переменная | Описание
+---------- | --------
+vector_version | Требуемая к установке версия дистрибутива
+vector_path | Директория для дистрибутива Vector
+vector_data_path | Директория для компонентов Vector
+vector_config | Путь к файлу конфигурации
+
 ### Tasks:
 1. Get Vector version - проверяет установлен ли vector.
 2. Create directory vector - создает директорию для установки.
@@ -48,15 +63,15 @@
 
 ## Play Install Lighthouse.
 ### [Переменные](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/group_vars/lighthouse/vars.yml)
-Определяют следующие параметры nginx:
-1. Путь для файла репозитория.
-2. Путь ко корневой директории.
-3. Путь до конфига по умолчанию.
+Переменная | Описание
+---------- | --------
+nginx_repo_path | Путь для файла репозитория Nginx
+nginx_root| Путь ко корневой директории Nginx
+nginx_conf | Путь до конфига Nginx по умолчанию
+lh_arch_dir_path | Директория для дистрибутива lighthouse
+lh_arch_path | Путь для архива с дистрибутивом lighthouse
+lh_uri_distr | Url для получения дистрибутива 
 
-Определяют следующие параметры lighthouse:
-1. Директорию для дистрибутива.
-2. Путь для архива с дистрибутивом.
-3. Url для получения дистрибутива.
 ### Tasks:
 Установка и настройка nginx:
 1. [Add repositories nginx](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/08-ansible-03-yandex/playbook/templates/nginx.repo.j2) - создает по шаблону файл репозитория.

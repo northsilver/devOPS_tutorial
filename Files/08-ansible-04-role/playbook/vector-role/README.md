@@ -1,19 +1,19 @@
 Vector-Role
 =========
 
-Устанавливает и настраивает Vector
+Install and setting up Vector
 
 Requirements
 ------------
 
-- Для создания окружения использовался yandex cloud
+- Yandex cloud was used to create the environment
 
 Role Variables
 --------------
 
 |Name|Description|
 |-----|-----|
-| vector_version | определяет версию Vector
+| vector_version | define version Vector
 
 Dependencies
 ------------

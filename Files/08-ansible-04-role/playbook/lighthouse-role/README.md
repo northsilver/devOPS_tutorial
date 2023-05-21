@@ -1,14 +1,14 @@
 Lighthouse-Role
 =========
 
-Устанавливает и настраивает Lighthouse
+Install and setting up Lighthouse
 
-Для запуска также будет установлен `nginx`
+For launch also will be install `nginx`
 
 Requirements
 ------------
 
-- Для создания окружения использовался yandex cloud
+- Yandex cloud was used to create the environment
 
 Role Variables
 --------------

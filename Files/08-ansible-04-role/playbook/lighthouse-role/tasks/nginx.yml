@@ -1,0 +1,29 @@
+---
+- name: Add repositories nginx
+  become: true
+  ansible.builtin.template:
+    src: ../templates/nginx.repo.j2
+    dest: "{{ nginx_repo_path }}"
+    mode: 0644
+    owner: root
+    group: root
+  tags:
+    - nginx
+- name: Install nginx
+  become: true
+  ansible.builtin.yum:
+    name:
+      - "nginx"
+    update_cache: true
+  tags:
+    - nginx
+
+- name: Configuring service nginx
+  become: true
+  systemd:
+    name: nginx
+    state: "started"
+    enabled: true
+    daemon_reload: true
+  tags:
+    - nginx

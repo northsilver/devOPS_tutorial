@@ -1,0 +1,86 @@
+---
+- name: Get Vector version
+  become: true
+  ansible.builtin.command: vector --version
+  register: vector_installed
+  failed_when: vector_installed.rc !=0
+  changed_when: vector_installed.rc ==0
+  ignore_errors: true
+  tags:
+    - vector
+- name: Create directory vector
+  become: true
+  file:
+    path: "{{ vector_path }}"
+    state: directory
+    mode: 0755
+  tags:
+    - vector
+- name: Get vector distrib
+  become: true
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+    dest: "{{ vector_path }}/vector-{{ vector_version }}-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+    mode: 755
+  tags:
+    - vector
+- name: Unarchive vector
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ vector_path }}/vector-{{ vector_version }}-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+    dest: "{{ vector_path }}"
+    remote_src: true
+    creates: "{{ vector_path }}/bin"
+    extra_opts: [--strip-components=2]
+  tags:
+    - vector
+- name: Create a symbolic link
+  become: true
+  ansible.builtin.file:
+    src: "{{ vector_path }}/bin/vector"
+    dest: /usr/bin/vector
+    owner: root
+    group: root
+    state: link
+  tags:
+    - vector
+- name: Create vector unit flie
+  become: true
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/vector.service.j2"
+    dest: /etc/systemd/system/vector.service
+    mode: 0644
+    owner: root
+    group: root
+  tags:
+    - vector
+- name: Mkdir vector data
+  become: true
+  ansible.builtin.file:
+    path: "{{ vector_data_path }}"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+  tags:
+    - vector
+- name: Vector config create
+  become: true
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/vector.toml.j2"
+    dest: "{{ vector_config }}"
+    owner: root
+    group: root
+    mode: '0755'
+    force: true
+  tags:
+    - vector
+- name: Configuring service vector
+  become: true
+  systemd:
+    name: vector
+    state: "started"
+    enabled: true
+    daemon_reload: true
+  tags:
+    - vector

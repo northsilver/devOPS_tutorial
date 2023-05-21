@@ -1,0 +1,7 @@
+---
+nginx_repo_path: "/etc/yum.repos.d/nginx.repo"
+nginx_root: "/usr/share/nginx/html"
+nginx_conf: "/etc/nginx/conf.d/default.conf"
+lh_arch_dir_path: "/usr/share/lighthouse"
+lh_arch_path: "{{ lh_arch_dir_path }}/lighthouse.zip"
+lh_uri_distr: "https://github.com/VKCOM/lighthouse/archive/refs/heads/master.zip"

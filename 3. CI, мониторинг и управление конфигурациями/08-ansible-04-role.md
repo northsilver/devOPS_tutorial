@@ -17,7 +17,6 @@ Starting galaxy role install process
 ivan@ivan-ThinkPad-X395:~$ ansible-galaxy role init vector-role
 - Role vector-role was created successfully
 ```
-
 ```bash
 ivan@ivan-ThinkPad-X395:~$ ansible-galaxy role init lighthouse-role
 - Role vector-role was created successfully

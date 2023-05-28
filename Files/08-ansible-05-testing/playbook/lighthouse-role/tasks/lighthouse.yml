@@ -1,0 +1,46 @@
+---
+- name: Create directory lighthouse
+  become: true
+  file:
+    path: "{{ lh_arch_dir_path }}"
+    state: directory
+    mode: 0755
+  tags:
+    - lighthouse
+- name: Get lighthouse distrib
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ lh_uri_distr }}"
+    dest: "{{ lh_arch_path}}"
+    mode: 0755
+  tags:
+    - lighthouse
+  register: get_lh
+- name: Install unzip
+  become: true
+  ansible.builtin.yum:
+    name:
+      - "unzip"
+    update_cache: true
+  tags:
+    - lighthouse
+- name: Unarchive lighthouse
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ lh_arch_path }}"
+    dest: "{{ lh_arch_dir_path }}"
+    remote_src: true
+  tags:
+    - lighthouse
+  when: get_lh.changed != false
+- name: Apply nginx config
+  become: true
+  ansible.builtin.template:
+    src: ../templates/nginx.conf.j2
+    dest: "{{ nginx_conf }}"
+    mode: 0644
+    owner: root
+    group: root
+  tags:
+    - lighthouse
+  notify: Restart nginx service

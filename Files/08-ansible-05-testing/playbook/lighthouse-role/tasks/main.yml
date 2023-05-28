@@ -1,0 +1,13 @@
+---
+- name: Install and configuring nginx
+  ansible.builtin.import_tasks: "{{ role_path }}/tasks/nginx.yml"
+  tags:
+    - nginx
+- name: Install and configuring lighthouse
+  ansible.builtin.import_tasks: "{{ role_path }}/tasks/lighthouse.yml"
+  tags:
+    - lighthouse
+- name: Flush handlers
+  meta: flush_handlers
+  tags:
+    - lighthouse

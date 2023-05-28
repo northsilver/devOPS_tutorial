@@ -1,0 +1,4 @@
+---
+vector_path: "/opt/vector"
+vector_data_path: "/var/lib/vector"
+vector_config: "{{ vector_path }}/config/vector.toml"

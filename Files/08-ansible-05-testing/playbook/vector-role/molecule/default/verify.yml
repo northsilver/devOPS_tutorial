@@ -1,0 +1,51 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: true
+  vars_files:
+    -  "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+    -  "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/vars/main.yml"
+  tasks:
+  - name: Get Vector version
+    become: true
+    ansible.builtin.shell:  "vector -V | cut -d ' ' -f 2"
+    register: vector_installed
+    failed_when: vector_installed.rc !=0
+    changed_when: vector_installed.rc ==0
+    ignore_errors: true
+
+  - name: Assert Vector version
+    ansible.builtin.assert:
+      that:
+        - "({{ vector_installed.rc }} == 0  and vector_installed.stdout == vector_version)"
+      success_msg: "{{ vector_installed.stdout }}"
+      fail_msg:
+        - "Failed to get Vector version. stdout: {{ vector_installed.stdout_lines }}"
+        - "Failed to get Vector version. stderr: {{ vector_installed.stderr_lines }}"
+  - name: Validate Vector config
+    ansible.builtin.command:
+      cmd: "vector validate --no-environment --config-toml {{ vector_config }}"
+    changed_when: false
+    failed_when: false
+    register: vector_config
+  - name: Assert Vector config
+    ansible.builtin.assert:
+      that:
+        - "{{ vector_config.rc }} == 0"
+      success_msg: "{{ vector_config.stdout }}"
+      fail_msg: "{{ vector_config.stderr_lines }}"
+  - name: Validate Vector service
+    ansible.builtin.command:
+      cmd: "systemctl status vector"
+    changed_when: false
+    failed_when: false
+    register: vector_status
+  - name: Assert Vector service
+    ansible.builtin.assert:
+      that:
+        - "{{ vector_status.stdout_lines | regex_findall('running', multiline=True, ignorecase=True) }}"
+        - "{{ vector_status.stdout_lines | regex_findall('enabled', multiline=True, ignorecase=True) }}"
+      success_msg: Vector started and enabled
+      fail_msg: "{{ vector_status.stdout_lines }}"

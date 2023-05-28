@@ -26,8 +26,8 @@
         - "Failed to get Vector version. stderr: {{ vector_installed.stderr_lines }}"
   - name: Validate Vector config
     ansible.builtin.command:
-    become: "{{ 'false' if ansible_user_uid == 0 else 'true' }}"
       cmd: "vector validate --no-environment --config-toml {{ vector_config }}"
+    become: "{{ 'false' if ansible_user_uid == 0 else 'true' }}"
     changed_when: false
     failed_when: false
     register: vector_config
@@ -39,8 +39,8 @@
       fail_msg: "{{ vector_config.stderr_lines }}"
   - name: Validate Vector service
     ansible.builtin.command:
-    become: "{{ 'false' if ansible_user_uid == 0 else 'true' }}"
       cmd: "systemctl status vector"
+    become: "{{ 'false' if ansible_user_uid == 0 else 'true' }}"
     changed_when: false
     failed_when: false
     register: vector_status

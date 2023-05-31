@@ -113,6 +113,7 @@ localhost                  : ok=2    changed=0    unreachable=0    failed=0    s
 ```
 - Шаг 17
 
+
 [Collection](https://github.com/northsilver/my_own_collection/blob/master/my_own_namespace/yandex_cloud_elk/README.md)
 
 [Tar.gz](https://github.com/northsilver/my_own_collection/blob/master/test/my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz)

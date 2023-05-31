@@ -111,7 +111,6 @@ ok: [localhost]
 PLAY RECAP ************************************************************************************************************************************************************************************************
 localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
-
 - Шаг 17
 
 [Collection](https://github.com/northsilver/my_own_collection/blob/master/my_own_namespace/yandex_cloud_elk/README.md)

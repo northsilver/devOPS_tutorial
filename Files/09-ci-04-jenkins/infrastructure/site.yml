@@ -31,7 +31,7 @@
     - name: Add Jenkins key
       become: true
       rpm_key:
-        key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
         state: present
         validate_certs: false
     - name: Install epel-release
@@ -43,19 +43,17 @@
       become: true
       yum:
         name:
-          - git
           - jenkins
+          - git
         state: present
       register: jenkins_installed
     - name: Ensure jenkins agents are present in known_hosts file
       become: true
       become_user: "{{ jenkins_user_name }}"
       known_hosts:
-#        name: "{{ hostvars[item].ansible_host }}"
-        name: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }}"
+        name: "{{ hostvars[item].ansible_host }}"
         state: present
-#        key: "{{ lookup('pipe', 'ssh-keyscan {{ hostvars[item].ansible_host }}') }}"
-        key: "{{ lookup('pipe', 'ssh-keyscan  {{  hostvars[item].ansible_facts.eth1.ipv4.address }} ') }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan {{ hostvars[item].ansible_host }}') }}"
         hash_host: true
       with_items: "{{ groups.jenkins_agents }}"
     - name: Start Jenkins
@@ -70,12 +68,6 @@
   become: true
   become_user: "{{ jenkins_user_name }}"
   tasks:
-    - name: adding ansible user to sudoers
-      become_user: root
-      lineinfile:
-        dest: /etc/sudoers
-        line: "{{ jenkins_user_name }} ALL=(ALL)       NOPASSWD: ALL"
-        validate: 'visudo -cf %s'
     - name: Add master publickey into authorized_key
       authorized_key:
         user: "{{ jenkins_user_name }}"
@@ -100,7 +92,6 @@
         name:
           - git
           - python3
-          - python-setuptools
           - docker-ce
           - docker-ce-cli
           - containerd.io
@@ -117,15 +108,9 @@
         executable: pip3
         name:
           - selinux
-          - chardet<5.0.0
-          - requests
           - ansible<3.0
-          - molecule==3.2.3
-          - molecule[docker]
-          - ansible-lint
-          - yamllint
-          - flake8
-          - docker
+          - molecule<3.6
+          - molecule-docker==1.0.2
         state: present
     - name: Reinstall Selinux
       become_user: root
@@ -137,8 +122,8 @@
     - name: Add local to PATH
       lineinfile:
         dest: ~/.bashrc
-        regexp: export PATH=$PATH:/home/jenkins/.local/bin:/usr/local/bin
-        line: export PATH=$PATH:/home/jenkins/.local:/usr/local/bin
+        regexp: export PATH=$PATH:/home/jenkins/.local/bin
+        line: export PATH=$PATH:/home/jenkins/.local/bin
     - name: Create docker group
       become_user: root
       group:
@@ -157,8 +142,7 @@
         enabled: true
     - name: Install agent.jar
       get_url:
-#        url: "http://{{ hostvars['jenkins-master-01']['ansible_host'] }}:8080/jnlpJars/agent.jar"
-        url: "http://{{ hostvars['jenkins-master-01']['ansible_facts']['eth1']['ipv4']['address'] }}:8080/jnlpJars/agent.jar"
+        url: "http://{{ hostvars['jenkins-master-01']['ansible_host'] }}:8080/jnlpJars/agent.jar"
         dest: "{{ jenkins_agent_dir }}"
       register: install_agent
       until: install_agent is succeeded

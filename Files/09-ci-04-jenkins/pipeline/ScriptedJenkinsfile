@@ -6,11 +6,11 @@ node("ansible"){
         secret_check=true
     }
     stage("Run playbook"){
-        if (secret_check){
+        if (prod_run){
             sh 'ansible-playbook site.yml -i inventory/prod.yml'
         }
         else{
-            echo 'need more action'
+            sh 'ansible-playbook site.yml -i inventory/prod.yml --check --diff'
         }
 
     }

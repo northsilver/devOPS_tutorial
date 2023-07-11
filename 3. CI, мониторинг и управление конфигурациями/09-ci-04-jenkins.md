@@ -100,7 +100,9 @@ jenkins-master-01          : ok=11   changed=8    unreachable=0    failed=0    s
 
 
 [Rep](https://github.com/northsilver/vector-role)
+
 [Declarative Pipeline](https://github.com/northsilver/vector-role/blob/main/Jenkinsfile)
+
 [Scripted Pipeline](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/09-ci-04-jenkins/pipeline/ScriptedJenkinsfile)
 
 ![Dashboard](https://github.com/northsilver/devOPS_tutorial/blob/master/PICtures/Screenshot%20from%202023-07-11%2020-55-23.png)

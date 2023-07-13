@@ -1,6 +1,7 @@
 ### Подготовка к выполнению
 
-- Скопировал репозиторий, указал в hosts заранее созданные машины с логином `nexus` ,  запустил `ansible-playbook site.yml -i inventory/cicd/hosts.yml `
+- Развернул VM в облаке
+- Скопировал репозиторий, указал в hosts заранее созданную машину с логином `nexus` ,  запустил `ansible-playbook site.yml -i inventory/cicd/hosts.yml `
 
 ### Выполнил
 

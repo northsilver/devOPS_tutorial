@@ -1,6 +1,6 @@
 ### Задание 1
 
-1. Создать манифест
+1. Создать [манифест](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/12-kubernetes-02-objects/pod.yaml), который создаст Pod
 
 ```bash
 apiVersion: v1
@@ -30,7 +30,7 @@ Handling connection for 8080
 
 ### Задание 2
 
-1. Создать манифест, который создаст Pod и Service
+1. Создать [манифест](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/12-kubernetes-02-objects/service.yaml), который создаст Pod и Service
 
 ```bash
 apiVersion: v1

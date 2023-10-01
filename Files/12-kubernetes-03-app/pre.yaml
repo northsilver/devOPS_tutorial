@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pre
+  template:
+    metadata:
+      labels:
+        app: pre
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+      - name: multitool
+        image: wbitt/network-multitool
+        ports:
+        - containerPort: 8080
+        command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]

@@ -38,7 +38,14 @@ WBITT Network MultiTool (with NGINX) - backend-5dd77f6686-54wzx - 10.1.128.226 -
                                  Dload  Upload   Total   Spent    Left  Speed
 100   143  100   143    0     0   139k      0 --:--:-- --:--:-- --:--:--  139k
 ```
-
+С DNS
+```bash
+ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ sudo kubectl exec frontend-nginx-5997d4c674-d6dtv -- curl backend-multitool-svc.default.svc.cluster.local:9002
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   143  100   143    0     0  28600      0 --:--:-- --:--:-- --:--:-- 35750
+WBITT Network MultiTool (with NGINX) - backend-5dd77f6686-4v5j6 - 10.1.128.250 - HTTP: 8080 , HTTPS: 443 . (Formerly praqma/network-multitool)
+```
 Проверка с бэка в фронт
 ```bash
 ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ sudo kubectl exec backend-5dd77f6686-54wzx -- curl 10.152.183.180:9001
@@ -69,24 +76,12 @@ Commercial support is available at
                                  Dload  Upload   Total   Spent    Left  Speed
 100   615  100   615    0     0   831k      0 --:--:-- --:--:-- --:--:--  600k
 ```
-
-### Задание 2
-Включил ingress 
+С DNS
 ```bash
-microk8s enable ingress
-```
-Создал [Ingress](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/12-kubernetes-05-net2/ingress.yaml)
-```bash
-ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ sudo kubectl apply -f ingress.yaml 
-Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
-ingress.networking.k8s.io/ingress created
-```
-
-```bash
-ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ curl ingress-test.com
-WBITT Network MultiTool (with NGINX) - backend-5dd77f6686-54wzx - 10.1.128.227 - HTTP: 8080 , HTTPS: 443 . (Formerly praqma/network-multitool)
-vagrant@vagrant:
-ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ curl ingress-test.com/api
+ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ sudo kubectl exec backend-5dd77f6686-4v5j6 -- curl frontend-svc.default.svc.cluster.local:9001
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   615  100   615    0     0   229k      0 --:--:-- --:--:-- --:--:--  300k
 <!DOCTYPE html>
 <html>
 <head>
@@ -110,4 +105,45 @@ Commercial support is available at
 <p><em>Thank you for using nginx.</em></p>
 </body>
 </html>
+```
+
+### Задание 2
+Включил ingress 
+```bash
+microk8s enable ingress
+```
+Создал [Ingress](https://github.com/northsilver/devOPS_tutorial/blob/master/Files/12-kubernetes-05-net2/ingress.yaml)
+```bash
+ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ sudo kubectl apply -f ingress.yaml 
+Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
+ingress.networking.k8s.io/ingress created
+```
+
+```bash
+ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ curl ingress-test.com
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+ivan@ivan-ThinkPad-X395:~/proj/devOPS_tutorial/Files/12-kubernetes-05-net2$ curl ingress-test.com/api
+WBITT Network MultiTool (with NGINX) - backend-5dd77f6686-4v5j6 - 10.1.128.250 - HTTP: 8080 , HTTPS: 443 . (Formerly praqma/network-multitool)
 ```

@@ -1,0 +1,4 @@
+kuber:
+  hosts:
+    master-vm.ru-central1.internal:
+      ansible_host: 178.154.223.66

@@ -1,0 +1,61 @@
+---
+- name: Prepare Kuberspray
+  hosts: master-vm.ru-central1.internal
+  become_user: root
+  remote_user: ubuntu
+  tasks:
+    - name: apt-get update on master-vm
+      become: yes
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install OS packages
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - git
+          - python3-pip
+        state: latest
+    - name: Get kubespray repostiory on master-vm
+      ansible.builtin.git:
+        repo: https://github.com/kubernetes-sigs/kubespray.git
+        dest: /home/ubuntu/kubespray
+    - name: Install Python requirements on master-vm
+      ansible.builtin.pip:
+        requirements: /home/ubuntu/kubespray/requirements.txt
+    - name: Install more OS packages on master-vm
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - python3
+          - ansible
+    - name: Copy Ansible inventory sample for Kubespray on master-vm
+      ansible.builtin.copy:
+        src: /home/ubuntu/kubespray/inventory/sample/
+        dest: /home/ubuntu/kubespray/inventory/mycluster/
+        remote_src: yes
+    - name: Copy ansible-inventory-kubespray on master-vm
+      ansible.builtin.copy:
+        src: ansible-inventory-kubespray
+        dest: /home/ubuntu/kubespray/inventory/mycluster/hosts.yaml
+    - name: Copy k8s-cluster.yml on master-vm
+      ansible.builtin.copy:
+        src: k8s-cluster.yml
+        dest: /home/ubuntu/kubespray/inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml
+    - name: Change ownership of a directory
+      ansible.builtin.file:
+        path: /home/ubuntu/kubespray
+        state: directory
+        recurse: yes
+        owner: ubuntu
+        group: ubuntu
+    - name: Copy ssh private key on master-vm
+      ansible.builtin.copy:
+        src:  ~/.ssh/id_rsa
+        dest: /home/ubuntu/.ssh/id_rsa
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+    - name: Execute task with extended PATH on master-vm
+      shell: echo $PATH
+      environment:
+        PATH: "/home/ubuntu/.local/bin/:{{ ansible_env.PATH }}"
